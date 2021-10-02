@@ -57,6 +57,7 @@ include $(QUANTUM_PATH)/debounce/tests/rules.mk
 include $(QUANTUM_PATH)/sequencer/tests/rules.mk
 include $(QUANTUM_PATH)/serial_link/tests/rules.mk
 include $(TMK_PATH)/common/test/rules.mk
+include keyboards/modern_cadet/tests/rules.mk
 ifneq ($(filter $(FULL_TESTS),$(TEST)),)
 include build_full_test.mk
 endif
