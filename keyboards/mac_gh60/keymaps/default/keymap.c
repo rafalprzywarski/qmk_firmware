@@ -38,15 +38,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_DEL, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS),
 };
 
+static int apple_fn_counter = 0;
+
+static void press_apple_fn(void)
+{
+    if (apple_fn_counter == 0)
+        register_code(KC_APFN);
+    ++apple_fn_counter;
+}
+
+static void release_apple_fn(void)
+{
+    --apple_fn_counter;
+    if (apple_fn_counter == 0)
+        unregister_code(KC_APFN);
+}
+
+static bool needs_apple_fn(uint16_t keycode)
+{
+    return IS_LAYER_OFF(2) && keycode >= KC_F1 && keycode <= KC_F12;
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record)
 {
-    if (IS_LAYER_OFF(2) && keycode >= KC_F1 && keycode <= KC_F12 && record->event.pressed)
-        register_code(KC_APFN);
+    if (needs_apple_fn(keycode) && record->event.pressed)
+        press_apple_fn();
     return true;
 }
 
 void post_process_record_user(uint16_t keycode, keyrecord_t *record)
 {
-    if (IS_LAYER_OFF(2) && keycode >= KC_F1 && keycode <= KC_F12 && record->event.pressed)
-        unregister_code(KC_APFN);
+    if (needs_apple_fn(keycode) && !record->event.pressed)
+        release_apple_fn();
 }
